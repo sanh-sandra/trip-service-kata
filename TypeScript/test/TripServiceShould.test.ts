@@ -1,65 +1,78 @@
 import "jest";
 import UserNotLoggedInException from "../src/exception/UserNotLoggedInException";
-import TripService from "../src/trip/TripService"
+import Trip from "../src/trip/Trip";
+import TripService from "../src/trip/TripService";
 import User from "../src/user/User";
+import UserSession from "../src/user/UserSession";
 
-let userv2: User
+let user: User;
+
+export interface IUserSession {
+    getUser(): User;
+}
+
 describe("TripServiceShould", () => {
 
     beforeEach(() => {
-        userv2 = new User()
-    })
+        user = new User();
+    });
     it("Should return empty array when user is empty", () => {
-        //given
-        let trip = new TripServiceTest()
-        const expectedResult = []
-        //when
-        const result = trip.getTripsByUser(userv2)
-        //then
+        // given
+        const expectedResult = [];
+        const loggedUser = new User();
+        const userSession: IUserSession = {
+            getUser: () => loggedUser,
+        };
+        const trip = new TripServiceTest(userSession);
+
+        // when
+        const result = trip.getTripsByUser(user);
+
+        // then
         expect(result).toEqual(expectedResult);
     });
+
     it("Should return Exception when user is null", () => {
-        //given
-        userv2 = null
-        let trip = new TripServiceTest()
-        //when
+        // given
+        const loggedUser = null;
+        const userSession: IUserSession = {
+            getUser: () => loggedUser,
+        };
+        const trip = new TripServiceTest(userSession);
+
+        // when
         try {
-            trip.getTripsByUser(userv2)
+            trip.getTripsByUser(user);
         } catch (exception) {
-            //then
+            // then
             expect(exception).toBeInstanceOf(UserNotLoggedInException);
         }
     });
-    it.skip("Should return friends when user is logged", () => {
+    it("Should return friends when user is logged", () => {
         // given
-        let trip = new TripServiceTest()
-        trip.userWithFriends = true
-        // let expected =
+        const loggedUser = new User();
+        const userSession: IUserSession = {
+            getUser: () => loggedUser,
+        };
+        const trip = new TripServiceTest(userSession);
+        const expectedResult = [];
+        const friend = new User();
+
         // when
-        // let result =
+        friend.addFriend(user);
+        trip.getTripsByUser(friend);
         // then
+        expect(expectedResult).toEqual([]);
     });
 });
 
 class TripServiceTest extends TripService {
-    userIsNull = false
-    userWithFriends = false
-
-    protected getUser(): User {
-        return userv2
+    constructor( private userSession: IUserSession) {
+        super(userSession);
     }
 
-    // protected getUser(): User {
-    //     if (this.userIsNull) {
-    //         return null
-    //     } else if (this.userWithFriends) {
-    //         let friend = new User()
-    //         friend.addFriend(friend)
-    //         let user = new User()
-    //         user.addFriend(friend)
-    //         return user
-    //     } else {
-    //         return new User()
-    //     }
-    // }
+    protected getTripList(user: User): Trip[] {
+        return [];
+    }
+    
 }
