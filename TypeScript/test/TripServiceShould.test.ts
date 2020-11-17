@@ -1,4 +1,5 @@
 import "jest";
+import UserNotLoggedInException from "../src/exception/UserNotLoggedInException";
 import TripService from "../src/trip/TripService"
 import User from "../src/user/User";
 
@@ -13,9 +14,24 @@ describe("TripServiceShould", () => {
         //then
         expect(result).toEqual(expectedResult);
     });
+    it("Should return Exception when user is null", () => {
+        //given
+        let trip = new TripServiceTest()
+        trip.userIsNull = true
+        const user = new User()
+        //when
+        try{
+            trip.getTripsByUser(user)
+        }catch(exception){   
+            //then
+            expect(exception).toBeInstanceOf(UserNotLoggedInException);
+        }
+    });
 });
 
 class TripServiceTest extends TripService{
+    userIsNull = false
+
     protected getUser():User{
         return new User()
     }

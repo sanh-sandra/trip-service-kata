@@ -12,6 +12,7 @@
   "author": "Daniel Perez <danipq26@gmail.com>",
   "devDependencies": {
     "@types/jest": "^21.1.6",
+    "@types/node": "^14.14.7",
     "jest": "^21.2.1",
     "ts-jest": "^21.2.2",
     "tslint": "^5.9.1"
