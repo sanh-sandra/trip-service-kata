@@ -11,7 +11,7 @@ export default class TripService {
         let isFriend: boolean = false;
 
         if (loggedUser != null) {
-            for (const friend of user.getFriends()) {
+            for (const friend of this.getFriends(user)) {
                 if (friend === loggedUser) {
                     isFriend = true;
                     break;
@@ -26,6 +26,10 @@ export default class TripService {
         } else {
             throw new UserNotLoggedInException();
         }
+    }
+
+    protected getFriends(user: User) {
+        return user.getFriends();
     }
 
     protected getUser(): User {
